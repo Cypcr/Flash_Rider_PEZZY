@@ -39,12 +39,6 @@ public class PlayerAttack : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            // Assuming the enemy has a script with a TakeDamage method
-            enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
-
-            // Trigger any enemy reaction, e.g., knockback
-            enemy.GetComponent<Enemy>().ReactToHit();
-
             // Optional: Play a hit effect
             PlayHitEffect(enemy.transform.position);
 
@@ -62,8 +56,6 @@ public class PlayerAttack : MonoBehaviour
         animator.SetBool("Melee", false);
         isAttacking = false; // Reset the flag
     }
-
-    
 
     private void PlayHitEffect(Vector2 position)
     {
@@ -86,8 +78,7 @@ public class PlayerAttack : MonoBehaviour
     }
 
     public bool IsAttacking()
-{
-    return isAttacking;
-}
-
+    {
+        return isAttacking;
+    }
 }

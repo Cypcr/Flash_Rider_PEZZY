@@ -8,23 +8,41 @@ public class PlayerShoot : MonoBehaviour
     [SerializeField]
     private GameObject _bulletPrefab;
 
-     [SerializeField]
+    [SerializeField]
     private float _bulletSpeed;
 
-    private bool _fireContinously;
-    // Start is called before the first frame update
+    [SerializeField]
+    private Transform _bulletSpawnPoint;  // Use BulletSpawnPoint instead of _gunOffset
 
-    // Update is called once per frame
+    [SerializeField]
+    private float _timeBetweenShots;
+
+    private bool _fireContinously;
+    private bool _fireSingle;
+    private float _lastFireTime;
+
     void Update()
     {
-        if (_fireContinously)
+        if (_fireContinously || _fireSingle)
+        {
+            float timeSinceLastFire = Time.time - _lastFireTime;
 
-        FireBullet();
+            if (timeSinceLastFire >= _timeBetweenShots)
+            {
+                FireBullet();
+                _lastFireTime = Time.time;
+
+                if (_fireSingle)
+                {
+                    _fireSingle = false;
+                }
+            }
+        }
     }
 
     private void FireBullet()
     {
-        GameObject bullet = Instantiate(_bulletPrefab, transform.position, transform.rotation);
+        GameObject bullet = Instantiate(_bulletPrefab, _bulletSpawnPoint.position, _bulletSpawnPoint.rotation);
         Rigidbody2D rigidbody = bullet.GetComponent<Rigidbody2D>();
 
         rigidbody.velocity = _bulletSpeed * transform.up;
@@ -33,5 +51,10 @@ public class PlayerShoot : MonoBehaviour
     private void OnFire(InputValue inputValue)
     {
         _fireContinously = inputValue.isPressed;
+
+        if (inputValue.isPressed)
+        {
+            _fireSingle = true;
+        }
     }
 }
